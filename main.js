@@ -19,7 +19,7 @@ function createWindow () {
     console.log(file)
     var csvData=[];
     fs.createReadStream(file[0])
-        .pipe(parse({delimiter: ':'}))
+        .pipe(parse({delimiter: ','}))
         .on('data', function(csvrow) {
             console.log(csvrow);
             //do something with csvrow
