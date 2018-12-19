@@ -18,5 +18,8 @@
   "homepage": "https://github.com/JustinRyanCarlson/electron-example#readme",
   "devDependencies": {
     "electron": "^3.0.13"
+  },
+  "dependencies": {
+    "csv-parse": "^4.2.0"
   }
 }

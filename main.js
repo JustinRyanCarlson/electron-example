@@ -1,5 +1,7 @@
 const { app, BrowserWindow } = require('electron')
 const dialog = require('electron').dialog;
+var fs = require('fs'); 
+var parse = require('csv-parse');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -15,6 +17,18 @@ function createWindow () {
     // Let the user specifify file to load 
     file = dialog.showOpenDialog(win)
     console.log(file)
+    var csvData=[];
+    fs.createReadStream(file[0])
+        .pipe(parse({delimiter: ':'}))
+        .on('data', function(csvrow) {
+            console.log(csvrow);
+            //do something with csvrow
+            csvData.push(csvrow);        
+        })
+        .on('end',function() {
+            //do something wiht csvData
+            console.log(csvData);
+        });
 
     // Open the DevTools.
     win.webContents.openDevTools()
