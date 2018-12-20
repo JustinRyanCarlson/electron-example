@@ -5,9 +5,17 @@
         <title>Hello World!</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
         We are using node <script>document.write(process.versions.node)</script>,
         Chrome <script>document.write(process.versions.chrome)</script>,
         and Electron <script>document.write(process.versions.electron)</script>.
+        <div>
+            <button id="load_csv">Load CSV</button>
+        </div>
+        <div>
+            <h4 id="csv_data"></h4>
+        </div>
     </body>
+    <script>
+        require('./index.js');
+    </script>
 </html>

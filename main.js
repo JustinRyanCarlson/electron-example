@@ -1,4 +1,5 @@
 const { app, BrowserWindow } = require('electron')
+const ipc = require('electron').ipcMain
 const dialog = require('electron').dialog;
 var fs = require('fs'); 
 var parse = require('csv-parse');
@@ -7,28 +8,12 @@ var parse = require('csv-parse');
 // be closed automatically when the JavaScript object is garbage collected.
 let win
 
-function createWindow () {
+function createWindow() {
     // Create the browser window.
-    win = new BrowserWindow({ width: 800, height: 600 })
+    win = new BrowserWindow({ width: 1440, height: 900 })
 
     // and load the index.html of the app.
     win.loadFile('index.html')
-
-    // Let the user specifify file to load 
-    file = dialog.showOpenDialog(win)
-    console.log(file)
-    var csvData=[];
-    fs.createReadStream(file[0])
-        .pipe(parse({delimiter: ','}))
-        .on('data', function(csvrow) {
-            console.log(csvrow);
-            //do something with csvrow
-            csvData.push(csvrow);        
-        })
-        .on('end',function() {
-            //do something wiht csvData
-            console.log(csvData);
-        });
 
     // Open the DevTools.
     win.webContents.openDevTools()
@@ -41,6 +26,51 @@ function createWindow () {
         win = null
     })
 }
+
+// function load_csv() {
+//     // Let the user specifify file to load 
+//     file = dialog.showOpenDialog(win)
+//     console.log(file)
+//     if (file != undefined) {
+//         var csvData=[];
+//         fs.createReadStream(file[0])
+//             .pipe(parse({delimiter: ','}))
+//             .on('data', function(csvrow) {
+//                 console.log(csvrow);
+//                 //do something with csvrow
+//                 csvData.push(csvrow);        
+//             })
+//             .on('end',function() {
+//                 //do something wiht csvData
+//                 console.log(csvData);
+//             });
+//         return csvData
+//     }
+//     else {
+//         load_csv()
+//     }
+// }
+
+ipc.on('load_csv', function (event) {
+    console.log('got to load_csv')
+
+    // Let the user specifify file to load 
+    file = dialog.showOpenDialog(win)
+    console.log(file)
+    var csvData=[];
+    fs.createReadStream(file[0])
+        .pipe(parse({delimiter: ','}))
+        .on('data', function(csvrow) {
+            // console.log(csvrow);
+            //do something with csvrow
+            csvData.push(csvrow);        
+        })
+        .on('end',function() {
+            //do something wiht csvData
+            // console.log(csvData);
+            event.sender.send('csv_data', csvData)
+        });
+})
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
